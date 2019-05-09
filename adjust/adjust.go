@@ -59,7 +59,7 @@ func addOptions(s string, opt interface{}) (string, error) {
 }
 
 // NewClient with either http.Client or with user and pw
-func NewClient(httpClient *http.Client, email, pw string, appID string) (*Client, error) {
+func NewClient(httpClient *http.Client, email, pw, appID string) (*Client, error) {
 	if httpClient == nil {
 		var err error
 		httpClient, err = createSession(email, pw)
