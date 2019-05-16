@@ -32,16 +32,43 @@ func main() {
 		EventKpis:         "tam0sc_events,xxwrmf_events,wk9hmc_events,tucsbx_events",
 		Kpis:              "installs",
 		Sandbox:           false,
-		HumanReadableKpis: true,
+		HumanReadableKpis: false,
 		Grouping:          "day,networks,campaigns,adgroups,creatives",
 		Reattributed:      "all",
 	}
-	list, _, err := client.KPI.List(context.Background(), &opt)
+	resp, _, err := client.KPI.List(context.Background(), &opt)
 	if err != nil {
 		log.Fatalf("Kpis List error: %s", err)
 		panic(err)
 	}
-	res, _ := json.Marshal(&list)
+	res, _ := json.Marshal(&resp)
 	fmt.Println(string(res))
 	fmt.Println("----------------")
+	for _, date := range resp.ResultSet.Dates {
+		for _, network := range date.Networks {
+			for _, campaign := range network.Campaigns {
+				id, err := campaign.ID()
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println("Campaign Name: ", campaign.Name)
+				fmt.Println("Campaign ID: ", id)
+				for _, adGroup := range campaign.AdGroups {
+					id, err := adGroup.ID()
+					if err != nil {
+						panic(err)
+					}
+					fmt.Println("AdGroup Name: ", adGroup.Name)
+					fmt.Println("AdGroup ID: ", id)
+					for _, creative := range adGroup.Creatives {
+						fmt.Println("Keyword: ", creative.Name)
+						for i, kpi := range creative.KpiValues {
+							fmt.Println("KPI KEY: ", resp.ResultParameters.Kpis[i])
+							fmt.Println("KPI VALUE: ", kpi)
+						}
+					}
+				}
+			}
+		}
+	}
 }

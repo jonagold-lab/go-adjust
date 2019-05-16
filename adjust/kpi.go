@@ -3,6 +3,8 @@ package adjust
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 // KPIService struct to hold individual service
@@ -68,16 +70,30 @@ type Campaign struct {
 	AdGroups []AdGroup `json:"adgroups"`
 }
 
+//ID converts the name to an ID "GB,IE_NonBrand_JG (284979913)"
+func (c Campaign) ID() (int64, error) {
+	idx := strings.LastIndex(c.Name, "(")
+	sid := c.Name[idx+1 : len(c.Name)-1]
+	return strconv.ParseInt(sid, 10, 64)
+}
+
 type AdGroup struct {
 	Token     string     `json:"token"`
 	Name      string     `json:"name"`
 	Creatives []Creative `json:"creatives"`
 }
 
+//ID converts the name to an ID "Exact Match (285227483)"00
+func (a AdGroup) ID() (int64, error) {
+	idx := strings.LastIndex(a.Name, "(")
+	sid := a.Name[idx+1 : len(a.Name)-1]
+	return strconv.ParseInt(sid, 10, 64)
+}
+
 type Creative struct {
-	Token     string    `json:"token"`
-	Name      string    `json:"name"`
-	KpiValues []float64 `json:"api_values"`
+	Token     string `json:"token"`
+	Name      string `json:"name"`
+	KpiValues []int  `json:"kpi_values"`
 }
 
 // Tracker holds its token and kpi values.
