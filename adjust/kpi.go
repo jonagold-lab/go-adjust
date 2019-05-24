@@ -91,9 +91,9 @@ func (a AdGroup) ID() (int64, error) {
 }
 
 type Creative struct {
-	Token     string `json:"token"`
-	Name      string `json:"name"`
-	KpiValues []int  `json:"kpi_values"`
+	Token     string    `json:"token"`
+	Name      string    `json:"name"`
+	KpiValues []float64 `json:"kpi_values"`
 }
 
 // Tracker holds its token and kpi values.
